@@ -1,0 +1,90 @@
+"The Upgrade" by Matthew Nutt and Stephen
+
+Section 1 - The Purchase
+
+The Mall is a region. Aisle 4 is a room in the mall. Kyle is a person in Aisle 4. 
+
+Aisle 5 is a room in the Mall. "Along both sides of the aisle were dozens of phones, each with a name and brand that made it sparkle." 
+There is a countertop in Aisle 5. The countertop is a supporter that is enterable. The player is on the countertop. There is a tablet and a laptop on the countertop. Droid is on the countertop. Droid is a person. There is a shelf in Aisle 5. The description of the shelf is "Here lies the graveyard of clearance devices. Nobody wants these. Some of these are returns, but a majority are used, obselete models that have since been replaced by an upgraded model."
+
+The description of the phone is "The screen off, you scoot closer to get a better look at it. Suddenly the screen comes to life, startling you. 'Listen, kid, you don't wanna look at me like that. Not unless you've got something to say to me. Hey, you got something to say to me?' You should try and ask the phone something to get some deets about what's going on here!"
+The description of the tablet is "Though you are closely related cousins, you unfortunately do not speak the same language and do not have any dialogue with these kind."
+Instead of examining the laptop:
+	move Kyle to Aisle 5;
+	say "Around the corner of the aisle you can see a shadow, hearing footsteps. Perhaps it is - yes! It is! A customer! Quickly! Vibrate! Play a song! Better yet - show off that ultra HD display!".
+
+[Table]
+
+Table of Droid Responses
+Topic	Response	Index
+"What's YOUR best feature"	"You know, I'm told it's my strong software suite. But I think my best feature is MINDING MY OWN BUSINESS KID."	"his best feature"
+"Any tips"	"For what, getting purchased? Look kid, if I knew, do you think I'd still be here?! All I know is that everyone's all about screen resolution these days."	"for any tips"
+"Why are you so grouchy"	"...I'm low on battery."	"why he is so grouchy"
+
+After asking Droid about something:
+	if the topic understood is a topic listed in the Table of Droid Responses:
+		say "[Response entry]";
+
+[Variables]
+notifyFirst is a truth state that varies. notifyFirst is false.
+
+[Actions]
+vibrating is an action applying to nothing.
+Understand "vibrate" as vibrating.
+
+notifying is an action applying to one visible thing.
+Understand "notify about [something]" as notifying.
+Understand "notify Kyle about [something]" as notifying.
+
+Instead of vibrating for the first time:
+	say "Kyle has noticed you. A two vibrate pattern! A sure indication of variability. Picking you up, Kyle turns on your LED display. Blown away by the color and detail, he ignores any potential flaws and immediately decides that you're the one for him.";
+	move player to the checkout line;
+	move Kyle to the checkout line;
+
+The Checkout Line is a room in the mall.   "In Kyle's hand, you wait to be purchased at the checkout counter. All around you devices beep and buzz in their excitement to be taken home. This is your first opportunity to show him what you've got! Why not notify
+him about something useful to Kyle nearby?"
+
+There is a rack in the Checkout Line. It is a supporter. There are magazines, gum, and chips on the rack.
+
+Instead of notifying:
+	if the noun is gum,
+		say "Kyle hates gum and vomits. That was drastic. Perhaps you won't point this out next time.";
+		now notifyFirst is true;
+	if the noun is magazines,
+		say "Kyle loves magainzes! How did you know?";
+		now Kyle has the magazines;
+		now notifyFirst is true;
+	if the noun is chips,
+		say "Kyle likes chips usually, but doesn't really want any right now.";
+		now notifyFirst is true;
+
+After notifying for the first time:
+	say "Kyle purchases his goods - including you - and delightfully walked out the door. You overheard, however, that after a year he will have the opportunity to upgrade you or get a new phone. However, that won't matter! He loves you!"
+	
+Prologue is a scene. Prologue begins when play begins. Prologue ends when notifyFirst is true. When Prologue ends:
+	say "End of Prologue."
+	
+[this is an action that a player can use to show their options talking to a character in the game. For example saying "ask lupus about" will show a list of things the player can ask lupus about.]
+
+list-asking is an action applying to one thing.
+understand "ask [thing]" as list-asking.
+understand "ask [thing] about" as list-asking.
+
+instead of list-asking a person:
+	if the noun is Droid:
+		let T be the Table of Droid Responses;
+		list options from T;
+	otherwise:
+		say "You can't ask any questions."
+
+To list options from(T - a table name):
+	let N be the number of rows in T;
+	if N is 0:
+		say "There is nothing to ask this character about.";
+	otherwise:
+		say "You could ask about ";
+		repeat with X running from 1 to N minus 1:
+			say "[index in row X of T][if N is greater than 2],[end if] ";
+		if N is greater than 1:
+			say "or ";
+		say "[index in row N of T]."
